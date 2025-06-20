@@ -1,207 +1,192 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang Chủ - Hệ Thống Web Bài Giảng</title>
-
-    <!-- Thêm Font Awesome CDN để sử dụng các icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-    <!-- CSS Styles -->
     <style>
-        /* Reset default browser styles */
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0; padding: 0; box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            color: #2c3e50;
         }
 
-        /* Header */
+        /* HEADER */
         header {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 20px;
             background-color: #2c3e50;
             color: white;
+            width: 100%;
         }
-
         header .logo img {
             width: 220px;
             height: 70px;
             border-radius: 5px;
-            /* Add border-radius for rounded corners */
         }
-
-        /* Thanh tìm kiếm */
-        header .search-bar {
+        .search-bar-container {
+            display: flex;
+            justify-content: center;
+            width: 50%;
+        }
+        .search-bar {
             display: flex;
             align-items: center;
-            width: 50%;  /* Đặt chiều rộng của thanh tìm kiếm */
-            justify-content: center; /* Căn giữa thanh tìm kiếm */
+            width: 100%;
         }
-
-        header .search-bar input {
+        .search-bar input {
             padding: 10px;
-            width: 80%;  /* Chiều rộng của input */
+            width: 80%;
             border: none;
             border-radius: 5px;
         }
-
-        header .search-bar button {
+        .search-bar button {
+            position: relative;
             padding: 10px 15px;
             background-color: #27ae60;
             color: white;
             border: none;
             border-radius: 5px;
-            margin-left: 4px;  /* Tách chữ "Tìm kiếm" với thanh tìm kiếm ra 3-4px */
+            margin-left: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, padding-right 0.3s;
+        }
+        .search-bar button::after {
+            content: "\f061";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-left: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .search-bar button:hover {
+            background-color: #219150;
+            padding-right: 22px;
+        }
+        .search-bar button:hover::after {
+            opacity: 1;
         }
 
-        /* Nút đăng nhập và đăng ký */
-        header .auth-buttons button {
-            padding: 10px 15px;
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+        }
+        .auth-buttons button {
+            padding: 10px 20px;
             background-color: #3498db;
             color: white;
             border: none;
             border-radius: 5px;
             margin-left: 10px;
+            cursor: pointer;
+            min-width: 100px;
+        }
+        .auth-buttons button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* Navigation Menu */
-        nav {
-            background-color: #34495e;
-            padding: 10px 0;
+        /* MENU */
+        .custom-menu {
+            width: 100%;
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: flex-start;
+            padding: 12px 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
-
-        nav ul {
+        .custom-menu ul {
             list-style: none;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px;
+            gap: 16px;
         }
-
-        nav ul li {
-            margin: 0 15px;
+        .custom-menu li {
+            flex: 1;
+            background-color: #34495e;
+            border-radius: 8px;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.3s;
+            min-width: 100px;
         }
-
-        nav ul li a {
+        .custom-menu li:hover {
+            background-color: #1abc9c;
+            transform: scale(1.05);
+        }
+        .custom-menu a {
+            display: block;
             color: white;
             text-decoration: none;
             font-weight: bold;
+            padding: 10px 0;
         }
 
-        /* Slide Show */
-        .slideshow {
-            position: relative;
-            overflow: hidden;
-            margin-top: 30px;
-        }
-
-        .slides {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-        }
-
-        .slide {
-            min-width: 100%;
-            position: relative;
-        }
-
-        .slide img {
-            width: 100%;
-            height: auto;
-        }
-
-        .caption {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            color: white;
-            font-size: 24px;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-        }
-
-        /* Footer */
+        /* FOOTER */
         footer {
             background-color: #2c3e50;
             color: white;
             text-align: center;
             padding: 20px;
             margin-top: 30px;
-        }
-
-        /* Hiệu ứng khi rê chuột vào nút đăng ký */
-        header .auth-buttons button:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Hiệu ứng khi nhấn nút */
-        header .auth-buttons button:active {
-            transform: translateY(2px);
-            box-shadow: none;
+            width: 100%;
         }
     </style>
 </head>
-
 <body>
 
-    <!-- Header Section -->
+    <!-- HEADER -->
     <header>
         <div class="logo">
-            <!-- Dùng helper asset() để đảm bảo đường dẫn đến ảnh là đúng -->
             <img src="{{ asset('Ảnh/LOGO.png') }}" alt="Logo Hệ Thống Web Bài Giảng">
         </div>
 
-        <div class="search-bar">
-            <input type="text" placeholder="Tìm kiếm khóa học...">
-            <button>Tìm kiếm</button>
+        <div class="search-bar-container">
+            <div class="search-bar">
+                <input type="text" placeholder="Tìm kiếm khóa học...">
+                <button>Tìm kiếm</button>
+            </div>
         </div>
 
         <div class="auth-buttons">
-            <!-- Liên kết đến trang đăng nhập -->
             <button onclick="window.location.href='/login'">Đăng nhập</button>
-
-            <!-- Liên kết đến trang đăng ký -->
             <button onclick="window.location.href='{{ route('register') }}'">Đăng ký</button>
         </div>
     </header>
 
-    <!-- Navigation Menu -->
-    <nav>
+    <!-- MENU -->
+    <nav class="custom-menu">
         <ul>
             <li><a href="#">Trang chủ</a></li>
             <li><a href="#">Khóa học</a></li>
-            <li><a href="#">Giảng viên</a></li>
-            <li><a href="#">Học viên</a></li>
+            <li><a href="#">Bài giảng</a></li>
+            <li><a href="#">Tài liệu</a></li>
+            <li><a href="#">Lịch học</a></li>
             <li><a href="#">Liên hệ</a></li>
         </ul>
     </nav>
 
-    <!-- Slide Show Section -->
-    <section class="slideshow">
-        <div class="slides">
-            <div class="slide">
-                <img src="course1.jpg" alt="Khóa học 1">
-                <div class="caption">Khóa học 1: Lập trình web cơ bản</div>
-            </div>
-            <div class="slide">
-                <img src="course2.jpg" alt="Khóa học 2">
-                <div class="caption">Khóa học 2: Thiết kế giao diện web</div>
-            </div>
-            <div class="slide">
-                <img src="course3.jpg" alt="Khóa học 3">
-                <div class="caption">Khóa học 3: Quản lý cơ sở dữ liệu</div>
-            </div>
-        </div>
-    </section>
+    <!-- MAIN CONTENT -->
+    <main style="padding: 40px; max-width: 1200px; margin: auto;">
+        <h1>Chào mừng bạn đến với Hệ Thống Web Bài Giảng</h1>
+        <p>Khám phá các khóa học chất lượng cùng đội ngũ giảng viên uy tín.</p>
+    </main>
 
-    <!-- Footer Section -->
-    <!-- Import Footer -->
+    <!-- FOOTER -->
     @include('components.footer')
 
 </body>
-
 </html>

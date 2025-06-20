@@ -1,24 +1,16 @@
-<header>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header - Hệ Thống Web Bài Giảng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            background-color: #f4f7fc;
-            color: #2c3e50;
         }
 
         header {
@@ -68,6 +60,7 @@
         header .auth-buttons {
             display: flex;
             align-items: center;
+            position: relative;
         }
 
         header .auth-buttons i {
@@ -83,7 +76,53 @@
             color: #3498db;
         }
 
-        /* Menu ngang */
+        /* Dropdown menu */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background-color: #34495e;
+            padding: 10px;
+            border-radius: 8px;
+            width: 150px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        /* Đảm bảo các mục trong dropdown có chiều rộng bằng nhau */
+        .dropdown-menu a, .dropdown-menu button {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            width: 100%; /* Chiều rộng 100% */
+            text-align: center; /* Căn giữa chữ */
+        }
+
+        .dropdown-menu a:hover, .dropdown-menu button:hover {
+            background-color: #1abc9c;
+        }
+
+        /* Nút đăng xuất có hiệu ứng */
+        .dropdown-menu button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 8px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .dropdown-menu button:hover {
+            background-color: #e74c3c;
+            transform: scale(1.05);
+        }
+
         .custom-menu {
             width: 100%;
             background-color: #34495e;
@@ -121,13 +160,14 @@
             display: block;
         }
     </style>
+</head>
+<body>
 
-    <!-- Logo -->
+<header>
     <div class="logo">
         <img src="{{ asset('Ảnh/LOGO.png') }}" alt="Logo Hệ Thống Web Bài Giảng">
     </div>
 
-    <!-- Thanh tìm kiếm -->
     <div class="search-bar-container">
         <div class="search-bar">
             <input type="text" placeholder="Tìm kiếm khóa học...">
@@ -135,23 +175,37 @@
         </div>
     </div>
 
-    <!-- Icon cá nhân và chuông -->
     <div class="auth-buttons">
         @php $role = auth()->user()->role ?? null; @endphp
 
-        @if ($role === 'teacher')
-            <i class="fas fa-user-circle" onclick="window.location.href='{{ route('teacher.profile') }}'"></i>
-        @elseif ($role === 'student')
-            <i class="fas fa-user-circle" onclick="window.location.href='{{ route('student.profile') }}'"></i>
-        @else
-            <i class="fas fa-user-circle" onclick="window.location.href='#'"></i>
-        @endif
+        <i class="fas fa-user-circle" id="profileIcon"></i>
 
         <i class="fas fa-bell" onclick="window.location.href='/notifications'"></i>
+
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" id="dropdownMenu">
+            <!-- Link to Profile Page -->
+            @if($role == 'student')
+                <a href="{{ route('student.profile') }}">Hồ sơ của tôi</a>
+            @elseif($role == 'teacher')
+                <a href="{{ route('teacher.profile') }}">Hồ sơ của tôi</a>
+            @endif
+            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit">Đăng xuất</button>
+            </form>
+        </div>
     </div>
 </header>
 
-<!-- Thanh menu ngang -->
+<script>
+    // Toggle dropdown menu
+    document.getElementById('profileIcon').addEventListener('click', function() {
+        var dropdownMenu = document.getElementById('dropdownMenu');
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+</script>
+
 <nav class="custom-menu">
     <ul>
         <li><a href="#">Trang chủ</a></li>
@@ -162,3 +216,6 @@
         <li><a href="#">Liên hệ</a></li>
     </ul>
 </nav>
+
+</body>
+</html>
