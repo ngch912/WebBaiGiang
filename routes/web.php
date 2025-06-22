@@ -9,30 +9,30 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CourseController;
 
 // =======================
 // 📌 PUBLIC ROUTES
 // =======================
 
-// Trang chủ
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home'); // Trang chủ
 
 // Đăng ký
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
-// Đăng nhập (hiển thị form)
+// Đăng nhập
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [CustomLoginController::class, 'store']);
 
 // Đăng xuất
 Route::post('/logout', function () {
-    Auth::logout(); // Đăng xuất người dùng
-    request()->session()->invalidate(); // Hủy session
-    request()->session()->regenerateToken(); // Tạo lại CSRF token
-    return redirect('/login'); // Chuyển hướng về trang đăng nhập
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/login');
 })->name('logout');
 
 // Quên mật khẩu
@@ -55,6 +55,12 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
     Route::get('/teacher/dashboard', [TeacherController::class, 'dashboard'])->name('teacher.dashboard');
     Route::get('/teacher/profile', [TeacherController::class, 'showProfile'])->name('teacher.profile');
     Route::post('/teacher/profile', [TeacherController::class, 'updateProfile'])->name('teacher.profile.update');
+    Route::get('/teacher/courses', [CourseController::class, 'index'])->name('teacher.courses.index');
+    Route::get('/teacher/courses/create', [CourseController::class, 'create'])->name('teacher.courses.create');
+    Route::post('/teacher/courses', [CourseController::class, 'store'])->name('teacher.courses.store');
+    Route::get('/teacher/courses/{course_id}/students', [CourseController::class, 'manageStudents'])->name('teacher.courses.manage_students');
+    Route::post('/teacher/courses/{course_id}/students', [CourseController::class, 'addStudent'])->name('teacher.courses.add_student');
+    Route::post('/teacher/courses/{course_id}/students/{student_id}/approve', [CourseController::class, 'approveStudent'])->name('teacher.courses.approve_student');
 });
 
 // STUDENT Routes
@@ -62,17 +68,14 @@ Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/student/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/student/profile', [StudentController::class, 'showProfile'])->name('student.profile');
     Route::post('/student/profile', [StudentController::class, 'updateProfile'])->name('student.profile.update');
+    Route::get('/student/courses', [StudentController::class, 'courses'])->name('student.courses');
 });
 
-// =======================
-// Profile Routes
-// =======================
-// Đảm bảo bạn có route cho trang hồ sơ học sinh và giáo viên
-Route::middleware(['auth'])->group(function () {
-    // Hồ sơ học sinh
-    Route::get('/student/profile', [ProfileController::class, 'studentProfile'])->name('student.profile');
+use App\Http\Controllers\HomeController;
 
-    // Hồ sơ giáo viên
-    Route::get('/teacher/profile', [ProfileController::class, 'teacherProfile'])->name('teacher.profile');
-});
+// Trang chủ
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+// Khóa học theo môn
+Route::get('/courses/subject/{subject}', [HomeController::class, 'subjectCourses'])->name('subject.courses');
 

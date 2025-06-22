@@ -90,7 +90,6 @@
             z-index: 10;
         }
 
-        /* Đảm bảo các mục trong dropdown có chiều rộng bằng nhau */
         .dropdown-menu a, .dropdown-menu button {
             text-decoration: none;
             color: white;
@@ -99,15 +98,14 @@
             padding: 8px 10px;
             border-radius: 4px;
             transition: background-color 0.3s;
-            width: 100%; /* Chiều rộng 100% */
-            text-align: center; /* Căn giữa chữ */
+            width: 100%;
+            text-align: center;
         }
 
         .dropdown-menu a:hover, .dropdown-menu button:hover {
             background-color: #1abc9c;
         }
 
-        /* Nút đăng xuất có hiệu ứng */
         .dropdown-menu button {
             background: none;
             border: none;
@@ -184,11 +182,12 @@
 
         <!-- Dropdown Menu -->
         <div class="dropdown-menu" id="dropdownMenu">
-            <!-- Link to Profile Page -->
             @if($role == 'student')
                 <a href="{{ route('student.profile') }}">Hồ sơ của tôi</a>
+                <a href="{{ route('student.courses') }}">Khóa học của tôi</a>
             @elseif($role == 'teacher')
                 <a href="{{ route('teacher.profile') }}">Hồ sơ của tôi</a>
+                <a href="{{ route('teacher.courses.index') }}">Quản lý khóa học</a>
             @endif
             <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                 @csrf
@@ -208,11 +207,10 @@
 
 <nav class="custom-menu">
     <ul>
-        <li><a href="#">Trang chủ</a></li>
-        <li><a href="#">Khóa học</a></li>
+        <li><a href="{{ route('student.courses') }}">Trang chủ</a></li> <!-- Link to home -->
+        <li><a href="{{ route('student.courses') }}">Khóa học</a></li> <!-- Link to courses -->
         <li><a href="#">Bài giảng</a></li>
         <li><a href="#">Tài liệu</a></li>
-        <li><a href="#">Lịch học</a></li>
         <li><a href="#">Liên hệ</a></li>
     </ul>
 </nav>

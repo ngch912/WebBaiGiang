@@ -10,11 +10,10 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        $user = Auth::user(); // dùng Auth facade cho rõ ràng
+        $user = Auth::user();
 
-        // Nếu chưa đăng nhập hoặc không có quyền
-        if (!$user || !in_array($user->role, $roles)) {
-            abort(403, 'Bạn không có quyền truy cập');
+        if (!in_array($user->role, $roles)) {
+            return redirect('/home')->with('error', 'Không có quyền truy cập');
         }
 
         return $next($request);

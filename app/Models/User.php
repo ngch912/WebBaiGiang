@@ -35,4 +35,36 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Quan hệ với bảng CourseMember (Học viên tham gia khóa học).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function courseMembers()
+    {
+        return $this->belongsToMany(Course::class, 'course_members', 'student_id', 'course_id')
+                    ->withPivot('status');  // Trả về trạng thái học viên
+    }
+
+    /**
+     * Quan hệ với bảng Course (Khóa học mà học viên tham gia).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function courses()
+{
+    return $this->belongsToMany(Course::class, 'course_members', 'student_id', 'course_id')->withPivot('status');
+}
+
+
+    /**
+     * Quan hệ với bảng Course (Khóa học mà giảng viên tạo).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function createdCourses()
+    {
+        return $this->hasMany(Course::class, 'teacher_id');
+    }
 }
