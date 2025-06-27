@@ -3,17 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Lecture;
 use App\Models\User;
+use App\Models\Lecture;
+use App\Models\Document;
 
 class Course extends Model
 {
-    protected $fillable = ['teacher_id', 'name', 'description'];  // Đổi title thành name để phù hợp với cơ sở dữ liệu
+    protected $fillable = ['teacher_id', 'name', 'description'];
 
     /**
-     * Quan hệ với giáo viên (Giảng viên dạy khóa học)
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * 👨‍🏫 Khóa học thuộc về một giáo viên
      */
     public function teacher()
     {
@@ -21,22 +20,38 @@ class Course extends Model
     }
 
     /**
-     * Quan hệ với học viên (Học viên tham gia khóa học)
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * 👩‍🎓 Học viên đã được duyệt trong khóa học
      */
     public function students()
     {
-        return $this->belongsToMany(User::class, 'course_members', 'course_id', 'student_id')->withPivot('status');
+        return $this->belongsToMany(User::class, 'course_members', 'course_id', 'student_id')
+                    ->withPivot('status', 'joined_at')
+                    ->wherePivot('status', 'approved');
     }
 
     /**
-     * Quan hệ với bài giảng (Bài giảng trong khóa học)
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * 🕒 Học viên đang chờ duyệt
+     */
+    public function studentsPending()
+    {
+        return $this->belongsToMany(User::class, 'course_members', 'course_id', 'student_id')
+                    ->withPivot('status', 'joined_at')
+                    ->wherePivot('status', 'pending');
+    }
+
+    /**
+     * 🎥 Danh sách bài giảng thuộc khóa học
      */
     public function lectures()
     {
         return $this->hasMany(Lecture::class, 'course_id');
+    }
+
+    /**
+     * 📎 Danh sách tài liệu (document) thuộc khóa học
+     */
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
     }
 }

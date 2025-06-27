@@ -66,4 +66,5 @@ class TeacherController extends Controller
         // Chuyển hướng lại trang hồ sơ và hiển thị thông báo thành công
         return redirect()->route('teacher.profile')->with('success', 'Cập nhật thông tin thành công!');
     }
+    
 }

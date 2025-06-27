@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,14 +18,8 @@ class CustomLoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            $role = Auth::user()->role;
-
-            return match ($role) {
-                'admin'   => redirect()->route('admin.dashboard'),
-                'teacher' => redirect()->route('teacher.dashboard'),
-                'student' => redirect()->route('student.dashboard'),
-                default   => redirect('/'),
-            };
+            // 👉 Sau khi đăng nhập thành công, chuyển về trang chủ
+            return redirect()->route('home');
         }
 
         return back()->withErrors([

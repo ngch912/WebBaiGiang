@@ -1,40 +1,61 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $course->name }}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-<body>
+@extends('layouts.app')
 
-@include('components.header')
+@section('content')
+    <div class="container mt-4">
 
-<div class="container mt-5">
-    <h2>{{ $course->name }}</h2>
-    <p><strong>Giảng viên: </strong>{{ $course->teacher->username }}</p>
-    <p><strong>Mô tả: </strong>{{ $course->description }}</p>
+        <div class="card shadow-lg">
+            <div class="row g-0">
+                <!-- Ảnh khóa học -->
+                <div class="col-md-5">
+                    <img src="{{ asset('images/default_course.jpg') }}" class="img-fluid h-100 rounded-start"
+                        alt="Ảnh khóa học" style="object-fit: cover;">
+                </div>
 
-    <div class="course-actions mt-4">
-        <h3>Các bài giảng trong khóa học</h3>
-        <ul>
-            @foreach($course->lectures as $lecture)
-                <li>{{ $lecture->title }}: <a href="{{ route('lectures.show', $lecture->id) }}">Xem bài giảng</a></li>
-            @endforeach
-        </ul>
+                <!-- Nội dung khóa học -->
+                <div class="col-md-7">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary fw-bold">{{ $course->name }}</h3>
+
+                        <p class="card-text mt-3">
+                            <strong>Môn học:</strong>
+                            <span class="badge bg-info text-dark">{{ $course->subject }}</span>
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Giáo viên:</strong>
+                            {{ $course->teacher->username ?? 'Chưa cập nhật' }}
+                        </p>
+
+                        <p class="card-text mt-3">
+                            <strong>Mô tả khóa học:</strong>
+                            <br>
+                            {{ $course->description }}
+                        </p>
+
+                        <p class="card-text mt-4 text-muted">
+                            <i class="fas fa-calendar-alt"></i> Ngày tạo: {{ $course->created_at->format('d/m/Y') }}
+                            <br>
+                            <i class="fas fa-edit"></i> Cập nhật lần cuối: {{ $course->updated_at->format('d/m/Y') }}
+                        </p>
+
+                        <a href="{{ url()->previous() }}" class="btn btn-secondary mt-3">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                    </div>
+                    @auth
+                        @if (auth()->user()->role === 'student')
+                            <form method="POST" action="{{ route('courses.request_join', $course->id) }}">
+                                @csrf
+                                <button class="btn btn-primary mt-3">
+                                    📥 Tham gia khóa học
+                                </button>
+                            </form>
+                        @endif
+                    @endauth
+
+                </div>
+            </div>
+        </div>
+
     </div>
-
-    <div class="student-actions mt-4">
-        <h3>Thành viên trong khóa học</h3>
-        <ul>
-            @foreach($course->students as $student)
-                <li>{{ $student->username }} ({{ $student->email }})</li>
-            @endforeach
-        </ul>
-    </div>
-</div>
-
-@include('components.footer')
-
-</body>
-</html>
+@endsection
