@@ -6,11 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class CourseMember extends Model
 {
+
+    
     // Tên bảng tương ứng trong cơ sở dữ liệu
     protected $table = 'course_members';
 
     // Các trường có thể gán hàng loạt
-    protected $fillable = ['course_id', 'student_id', 'joined_at', 'status']; // Thêm status vào $fillable
+   protected $fillable = [
+        'user_id',
+        'student_id',
+        'course_id',
+        'status',
+        'joined_at',
+        'role',
+    ];
 
     /**
      * Quan hệ với bảng Course (Khóa học)
@@ -33,4 +42,5 @@ class CourseMember extends Model
     {
         return $this->belongsTo(User::class, 'student_id');
     }
+    
 }

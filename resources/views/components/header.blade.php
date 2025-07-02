@@ -205,8 +205,8 @@
         <ul>
             <li><a href="{{ route('home') }}">Trang chủ</a></li>
             <li><a href="{{ route('courses.all') }}">Khóa học</a></li>
-            <li><a href="#">Bài giảng</a></li>
-            <li><a href="#">Tài liệu</a></li>
+            <li><a href="{{ route('lectures.index') }}">Bài giảng</a></li>
+            <li><a href="{{ route('documents.index') }}">Tài liệu</a></li>
             <li><a href="#">Liên hệ</a></li>
         </ul>
     </nav>

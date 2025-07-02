@@ -34,7 +34,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:1',
         ]);
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
@@ -61,7 +61,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:1|confirmed',
             'role' => 'required|in:admin,teacher,student',
         ]);
 
@@ -74,6 +74,7 @@ class AuthController extends Controller
         try {
             $user = new User();
             $user->username = $request->username;
+            $user->name = $request->username;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
             $user->role = $request->role;
@@ -89,5 +90,14 @@ class AuthController extends Controller
             Session::flash('error', 'Có lỗi xảy ra khi đăng ký. Vui lòng thử lại!');
             return redirect()->route('register')->withInput();
         }
+    }
+     public function logout(Request $request)
+    {
+        Auth::logout(); // Xoá session người dùng
+
+        $request->session()->invalidate(); // Xoá session hiện tại
+        $request->session()->regenerateToken(); // Tạo lại CSRF token
+
+        return redirect()->route('login'); // Điều hướng về trang login
     }
 }
