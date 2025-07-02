@@ -17,6 +17,7 @@ class User extends Authenticatable
      */
     protected $fillable = ['username', 'email', 'password', 'role'];
 
+    
     /**
      * Các thuộc tính bị ẩn khi trả về dạng mảng hoặc JSON.
      *

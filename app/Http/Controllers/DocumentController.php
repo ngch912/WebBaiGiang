@@ -1,38 +1,58 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Course;
 use App\Models\Document;
+use App\Models\Course;
+use Illuminate\Support\Facades\Storage;
+
 
 class DocumentController extends Controller
 {
-    // Hiển thị form để upload tài liệu cho 1 khóa học
-    public function create($course_id)
+     public function index($course_id)
     {
-        $course = Course::findOrFail($course_id);
-        return view('documents.create', compact('course'));
+        $course = Course::with('documents')->findOrFail($course_id);
+        $documents = Document::with('course')->get();
+        return view('documents.index', compact('documents'));
     }
 
-    // Lưu tài liệu vào database
-    public function store(Request $request, $course_id)
+    public function create($course_id)
+    {
+        $courses = Course::findOrFail($course_id);;
+        return view('documents.create', compact('courses'));
+    }
+
+    public function store(Request $request)
     {
         $request->validate([
+            'course_id' => 'required|exists:courses,id',
             'title' => 'required|string|max:255',
-            'file' => 'required|file',
-            'type' => 'required|in:video,pdf,docx,image'
+            'file' => 'required|mimes:pdf,docx,doc,xlsx,xls,pptx,ppt,zip,rar|max:10240',
         ]);
 
-        $file = $request->file('file');
-        $filePath = $file->store('documents', 'public');
+        $path = $request->file('file')->store('documents', 'public');
 
         Document::create([
-            'course_id' => $course_id,
+            'course_id' => $request->course_id,
             'title' => $request->title,
-            'file_path' => $filePath,
-            'type' => $request->type
+            'type' => $request->type,
+            'file_path' => $path,
         ]);
 
-        return redirect()->route('teacher.courses.index')->with('success', 'Tải tài liệu lên thành công!');
+        return redirect()->route('admin.courses.index')->with('success', 'Tải tài liệu thành công');
+    }
+
+    // public function download(Document $document)
+    // {
+    //     return Storage::disk('public')->download($document->file_path);
+    // }
+
+    public function destroy(Document $document)
+    {
+        Storage::disk('public')->delete($document->file_path);
+        $document->delete();
+
+        return back()->with('success', 'Đã xóa tài liệu!');
     }
 }

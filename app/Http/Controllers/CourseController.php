@@ -13,8 +13,13 @@ class CourseController extends Controller
 {
     public function index()
     {
+        if (Auth::user()->role === 'admin') {
+        $courses = Course::withCount('documents')->get();
+        return view('admin.courses.index', compact('courses'));
+    } else {
         $courses = Course::where('teacher_id', Auth::id())->get();
         return view('teacher.courses.index', compact('courses'));
+    }
     }
 
     public function create()
@@ -33,7 +38,7 @@ class CourseController extends Controller
 
         $course = new Course();
         $course->teacher_id = Auth::id();
-        $course->name = $request->name;
+        $course->title = $request->name;
         $course->description = $request->description;
         $course->subject = $request->subject;
         $course->save();
@@ -87,6 +92,7 @@ class CourseController extends Controller
         }
 
         CourseMember::create([
+            'user_id' => $student->id,
             'course_id' => $course->id,
             'student_id' => $student->id,
             'status' => 'pending',
@@ -140,6 +146,7 @@ public function requestJoinCourse($course_id)
     }
 
     CourseMember::create([
+         'user_id' => $user->id,
         'course_id' => $course_id,
         'student_id' => $user->id,
         'status' => 'pending',

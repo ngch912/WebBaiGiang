@@ -30,4 +30,11 @@ class HomeController extends Controller
 
     return view('home', compact('highlightedCourses', 'coursesBySubject'));
 }
+    public function subjectCourses($subject)
+    {
+        // Lấy tất cả các khóa học có subject tương ứng
+        $courses = Course::where('subject', $subject)->get();
+
+        return view('courses.subject', compact('subject', 'courses'));
+    }
 }

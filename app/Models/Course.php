@@ -9,7 +9,7 @@ use App\Models\Document;
 
 class Course extends Model
 {
-    protected $fillable = ['teacher_id', 'name', 'description'];
+    protected $fillable = ['teacher_id', 'name', 'description','subject'];
 
     /**
      * 👨‍🏫 Khóa học thuộc về một giáo viên
@@ -54,4 +54,7 @@ class Course extends Model
     {
         return $this->hasMany(Document::class);
     }
+    public function subject() {
+    return $this->belongsTo(Subject::class);
+}
 }
